@@ -18,10 +18,20 @@ def androidTestType = "AndroidTest"
 def bothTestType = "BothTest"
 
 android {
+
+    compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
+        // Sets Java compatibility to Java 8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
+        multiDexEnabled true
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode getAppVersionCode()
@@ -36,12 +46,14 @@ android {
         debug {
             testCoverageEnabled true
             debuggable true
+            buildConfigField("String", "VERSION_NAME", "\"${versionName}\"")
         }
         release {
             testCoverageEnabled true
             minifyEnabled false
             debuggable false
             consumerProguardFiles 'consumer-rules.pro'
+            buildConfigField("String", "VERSION_NAME", "\"${versionName}\"")
         }
     }
 
@@ -200,6 +212,9 @@ task sourcesJar(type: Jar) {
 }
 
 dependencies {
+    //Java 8 - Desugaring
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.9'
+
     implementation "androidx.appcompat:appcompat:$rootProject.ext.appCompatVersion"
     implementation "androidx.browser:browser:$rootProject.ext.browserVersion"
     implementation "com.google.code.gson:gson:$rootProject.ext.gsonVersion"
