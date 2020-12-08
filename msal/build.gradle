@@ -5,12 +5,12 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply from: 'versioning/version_tasks.gradle'
 group = 'com.microsoft.identity.client'
-apply plugin: 'jacoco'
+//apply plugin: 'jacoco'
 
 // To include Robolectric tests in the Jacoco report, flag -> "includeNolocationClasses" is set to true
-tasks.withType(Test) {
-    jacoco.includeNoLocationClasses = true
-}
+//tasks.withType(Test) {
+//    jacoco.includeNoLocationClasses = true
+//}
 
 //Constants:- used to generate Coverage report task
 def unitTestType = "UnitTest"
@@ -106,9 +106,9 @@ android {
 
         // create separate code coverage tasks(for unitTests, androidTests and both Tests) for every build variant
         def buildVariant = variant.name
-        createCoverageTask(buildVariant, unitTestType)
-        createCoverageTask(buildVariant, androidTestType)
-        createCoverageTask(buildVariant, bothTestType)
+        //createCoverageTask(buildVariant, unitTestType)
+        //createCoverageTask(buildVariant, androidTestType)
+        //createCoverageTask(buildVariant, bothTestType)
     }
 
     testOptions {
@@ -178,6 +178,7 @@ ext.createCoverageTask = { buildVariant, testType ->
         //Code coverage report is generated based on the the output files of additional tasks(unitTestTask, androidTestTask or both)
         executionData.from = fileTree(dir: "$buildDir", includes: executionFiles)
 
+
         // html reports are auto-generated without enabling flag, so enabling xml flag
         reports {
             xml.enabled = true
@@ -215,6 +216,8 @@ dependencies {
     //Java 8 - Desugaring
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.9'
 
+    implementation group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
+
     implementation "androidx.appcompat:appcompat:$rootProject.ext.appCompatVersion"
     implementation "androidx.browser:browser:$rootProject.ext.browserVersion"
     implementation "com.google.code.gson:gson:$rootProject.ext.gsonVersion"
@@ -236,9 +239,7 @@ dependencies {
     androidTestImplementation "androidx.test:rules:$rootProject.rulesVersion"
     androidTestImplementation "org.mockito:mockito-android:$rootProject.ext.mockitoAndroidVersion"
     // 'local' flavor dependencies
-    localApi(project(":common")) {
-        transitive = false
-    }
+    localApi(project(":common"))
 
     snapshotApi(group: 'com.microsoft.identity', name: 'common', version: '3.0.6', changing: true)
 
